@@ -17,8 +17,13 @@ Cosylab d.d. 2014
 #define MAX_VELOCITY      40000 //steps/s
 #define MIN_VELOCITY      1     //steps/s
 
-#define MAX_ACCELERATION  500000  // steps/s^2
-#define MIN_ACCELERATION  4000    // steps/s^2
+//I4XM01
+#define MAX_ACCELERATION  40000  // steps/s^2
+#define MIN_ACCELERATION  1      // steps/s^2
+
+//I1AM01
+//#define MAX_ACCELERATION  500000  // steps/s^2
+//#define MIN_ACCELERATION  4000    // steps/s^2
 
 //Controller parameters
 #define controllerStatusString      "CONTROLLER_STATUS"

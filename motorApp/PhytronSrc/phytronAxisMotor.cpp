@@ -816,13 +816,25 @@ asynStatus phytronAxis::moveVelocity(double minVelocity, double maxVelocity, dou
              "error code: %d!\n", axisNo_, acceleration, phyStatus);
   }
 
-  if(maxVelocity < 0) {
-    sprintf(pC_->outString_, "M%.1fL-", axisModuleNo_);
-  } else {
-    sprintf(pC_->outString_, "M%.1fL+", axisModuleNo_);
+  sprintf(pC_->outString_, "M%.1f==H", axisModuleNo_);
+  phyStatus = pC_->sendPhytronCommand(pC_->outString_, pC_->inString_, MAX_CONTROLLER_STRING_SIZE, &this->response_len);
+  if(phyStatus){
+    setIntegerParam(pC_->motorStatusProblem_, 1);
+    callParamCallbacks();
+    asynPrint(pC_->pasynUserSelf, ASYN_TRACE_ERROR,
+             "phytronAxis::poll: Reading axis standstill status failed for axis: %d!\n", axisNo_);
+    return pC_->phyToAsyn(phyStatus);
   }
 
-  phyStatus = pC_->sendPhytronCommand(pC_->outString_, pC_->inString_, MAX_CONTROLLER_STRING_SIZE, &this->response_len);
+  if(pC_->inString_[0]=='E'){
+    if(maxVelocity < 0) {
+      sprintf(pC_->outString_, "M%.1fL-", axisModuleNo_);
+    } else {
+      sprintf(pC_->outString_, "M%.1fL+", axisModuleNo_);
+    }
+    phyStatus = pC_->sendPhytronCommand(pC_->outString_, pC_->inString_, MAX_CONTROLLER_STRING_SIZE, &this->response_len);
+  }
+
   if(phyStatus){
     asynPrint(pC_->pasynUserSelf, ASYN_TRACE_ERROR,
               "phytronAxis::moveVelocity: Moving axis %d failed with error code: %d!\n", axisNo_, phyStatus);
